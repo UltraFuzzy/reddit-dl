@@ -250,6 +250,11 @@ export default class Fetcher {
       headers['Authorization'] = `Bearer ${this.#accessToken}`;
     } else {
       headers['Accept-Language'] = 'en-GB,en;q=0.5';
+      // Reddit login-walls anonymous JSON requests; a logged-in session
+      // cookie gets past it when no OAuth token is available.
+      if (this.#config.cookie) {
+        headers['Cookie'] = this.#config.cookie;
+      }
     }
     if (requiresAuth && !this.#accessToken) {
       throw new FetcherError({
